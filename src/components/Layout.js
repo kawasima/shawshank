@@ -6,7 +6,9 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 export default function Layout(props) {
   return(
     <div className="container">
-      {props.children}
+      <div className="py-5 text-center">
+        {props.children}
+      </div>
     </div>
   )
 }

@@ -40,6 +40,30 @@ export default class FileQR extends React.Component {
           :
           fileVal(file, this.fileId, offset)
     const foreground = progress === 100 ? '#4E937A' : '#000000'
+    const progressMsg = progress === 100 ?
+          (
+            <div class="alert alert-success" role="alert">
+              Complete! Download here.
+            </div>
+          )
+          :
+          (
+            <div className="progress" style={
+                   {
+                     width: '600px',
+                     marginBottom: '20px',
+                     marginLeft: 'auto',
+                     marginRight: 'auto'
+                   }
+                 }>
+              <div className="progress-bar" role="progressbar"
+                   style={{width: progress + '%'}}
+                   aria-valuemin="0"
+                   aria-valuemax="100">
+              </div>
+            </div>
+          )
+
     const qr = new QRious({
       foreground,
       size: 600,
@@ -47,18 +71,7 @@ export default class FileQR extends React.Component {
     })
     return (
       <div>
-        <div className="progress" style={
-               {
-                 width: '600px',
-                 marginBottom: '20px'
-               }
-             }>
-          <div className="progress-bar" role="progressbar"
-               style={{width: progress + '%'}}
-               aria-valuemin="0"
-               aria-valuemax="100">
-          </div>
-        </div>
+        {progressMsg}
         <img src={qr.toDataURL()}/>
       </div>
     )

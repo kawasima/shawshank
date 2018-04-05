@@ -9,7 +9,7 @@ const selectFileForm = ({ onSelectFile }) => (
   <div>
     <h2>Select file</h2>
     <input name="file" type="file" value=""
-         onChange={e => selectFileHandler(e, onSelectFile) }/>
+           onChange={e => selectFileHandler(e, onSelectFile) }/>
   </div>
 )
 
