@@ -1,5 +1,5 @@
 import React from 'react'
-import QRCode from 'qrcode.react'
+import QRious from 'qrious'
 
 const base64encode = buf => btoa(
   new Uint8Array(buf)
@@ -7,7 +7,7 @@ const base64encode = buf => btoa(
 )
 
 const fileVal = (file, fileId, offset) => {
-  const len = Math.min(file.content.byteLength - offset, 1470)
+  const len = Math.min(file.content.byteLength - offset, 8000)
   return window.origin
     + '/u/' + fileId
     + '/' + encodeURIComponent(base64encode(file.content.slice(offset, offset + len)))
@@ -39,12 +39,17 @@ export default class FileQR extends React.Component {
           `${window.origin}/d/${this.fileId}`
           :
           fileVal(file, this.fileId, offset)
-    const fgColor = progress === 100 ? '#4E937A' : '#000000'
+    const foreground = progress === 100 ? '#4E937A' : '#000000'
+    const qr = new QRious({
+      foreground,
+      size: 600,
+      value: qrVal
+    })
     return (
       <div>
         <div className="progress" style={
                {
-                 width: '512px',
+                 width: '600px',
                  marginBottom: '20px'
                }
              }>
@@ -54,9 +59,7 @@ export default class FileQR extends React.Component {
                aria-valuemax="100">
           </div>
         </div>
-        <QRCode value={qrVal}
-                size={512}
-                fgColor={fgColor}/>
+        <img src={qr.toDataURL()}/>
       </div>
     )
   }
