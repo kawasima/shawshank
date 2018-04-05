@@ -1,0 +1,102 @@
+{
+  "name": "shawshank",
+  "version": "0.1.0-SNAPSHOT",
+  "author": "kawasima",
+  "keywords": [
+    "file transportation"
+  ],
+  "homepage": "https://github.com/kawasima/shawshank",
+  "bugs": {
+    "url": "https://github.com/kawasima/shawshank/issues",
+    "email": "kawasima1016@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kawasima/shawshank.git"
+  },
+  "license": "GPL",
+  "scripts": {
+    "start": "cross-env NODE_ENV=development node app.js",
+    "build": "webpack --config webpack.config.production.js",
+    "production": "node app.js"
+  },
+  "babel": {
+    "presets": [
+      [
+        "@babel/preset-env",
+        {
+          "targets": {
+            "browsers": [
+              "last 2 versions",
+              "safari >= 7"
+            ]
+          }
+        }
+      ]
+    ],
+    "plugins": [
+      "@babel/plugin-transform-react-jsx",
+      "@babel/plugin-transform-async-to-generator",
+      "@babel/plugin-syntax-dynamic-import",
+      [
+        "@babel/plugin-proposal-object-rest-spread",
+        {
+          "loose": true,
+          "useBuiltIns": true
+        }
+      ],
+      "@babel/plugin-proposal-class-properties"
+    ],
+    "env": {
+      "development": {
+        "plugins": [
+          "react-hot-loader/babel"
+        ]
+      }
+    }
+  },
+  "dependencies": {
+    "atob": "^2.1.0",
+    "bootstrap": "^4.0.0",
+    "express": "^4.16.3",
+    "final-form": "^4.3.1",
+    "is-array-buffer": "^1.0.0",
+    "qrcode.react": "^0.8.0",
+    "react": "^16.3.0-rc.0",
+    "react-dom": "^16.2.0",
+    "react-final-form": "^3.1.2",
+    "react-redux": "^5.0.7",
+    "react-router": "^4.2.0",
+    "react-router-dom": "^4.2.2",
+    "react-router-redux": "^4.0.8",
+    "redux": "^3.7.2",
+    "redux-logger": "^3.0.6",
+    "redux-persist": "^5.9.1",
+    "redux-promise": "^0.5.3"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.0.0-beta.44",
+    "@babel/core": "^7.0.0-beta.44",
+    "@babel/plugin-proposal-class-properties": "^7.0.0-beta.44",
+    "@babel/plugin-proposal-object-rest-spread": "^7.0.0-beta.44",
+    "@babel/plugin-syntax-dynamic-import": "^7.0.0-beta.44",
+    "@babel/plugin-transform-async-to-generator": "^7.0.0-beta.44",
+    "@babel/plugin-transform-react-jsx": "^7.0.0-beta.44",
+    "@babel/plugin-transform-runtime": "^7.0.0-beta.44",
+    "@babel/preset-env": "^7.0.0-beta.44",
+    "@babel/runtime": "^7.0.0-beta.44",
+    "babel-loader": "8.0.0-beta.2",
+    "cross-env": "^5.1.4",
+    "css-loader": "^0.28.11",
+    "eslint": "^4.18.2",
+    "jest": "^22.4.3",
+    "license-webpack-plugin": "^1.2.3",
+    "react-hot-loader": "^4.0.0",
+    "style-loader": "^0.20.3",
+    "webpack": "^4.1.1",
+    "webpack-cli": "^2.0.12",
+    "webpack-dev-server": "^3.1.0",
+    "webpack-hot-middleware": "^2.21.2",
+    "webpack-merge": "^4.1.2"
+  }
+}
