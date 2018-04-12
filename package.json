@@ -28,7 +28,7 @@
           "targets": {
             "browsers": [
               "last 2 versions",
-              "safari >= 7"
+              "ie 11"
             ]
           }
         }
@@ -37,6 +37,7 @@
     "plugins": [
       "@babel/plugin-transform-react-jsx",
       "@babel/plugin-transform-async-to-generator",
+      "@babel/plugin-transform-object-assign",
       "@babel/plugin-syntax-dynamic-import",
       [
         "@babel/plugin-proposal-object-rest-spread",
@@ -61,6 +62,7 @@
     "express": "^4.16.3",
     "final-form": "^4.3.1",
     "is-array-buffer": "^1.0.0",
+    "qrious": "^4.0.2",
     "react": "^16.3.0-rc.0",
     "react-dom": "^16.2.0",
     "react-final-form": "^3.1.2",
@@ -71,8 +73,7 @@
     "redux": "^3.7.2",
     "redux-logger": "^3.0.6",
     "redux-persist": "^5.9.1",
-    "redux-promise": "^0.5.3",
-    "qrious": "^4.0.2"
+    "redux-promise": "^0.5.3"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0-beta.44",
@@ -81,6 +82,7 @@
     "@babel/plugin-proposal-object-rest-spread": "^7.0.0-beta.44",
     "@babel/plugin-syntax-dynamic-import": "^7.0.0-beta.44",
     "@babel/plugin-transform-async-to-generator": "^7.0.0-beta.44",
+    "@babel/plugin-transform-object-assign": "^7.0.0-beta.44",
     "@babel/plugin-transform-react-jsx": "^7.0.0-beta.44",
     "@babel/plugin-transform-runtime": "^7.0.0-beta.44",
     "@babel/preset-env": "^7.0.0-beta.44",
