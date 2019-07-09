@@ -55,7 +55,12 @@ app.get('/stream', function(req, res) {
 app.get('/d/:fileId', function(req, res) {
   const id = req.params['fileId']
   const filepath = path.join(__dirname, 'data', id)
-  res.download(filepath)
+  res.download(filepath, function(err) {
+    fs.unlink(filepath, function(unlinkErr) {
+      if (err) throw err;
+      console.log(filepath + ' was deleted.');
+    });
+  })
 })
 
 app.get('/u/:fileId/:content', function(req, res) {
@@ -82,6 +87,23 @@ app.get('*', function(req,res) {
   res.sendFile(path.join(__dirname, 'public', 'index.html'))
 })
 
+// file cleaning
+setInterval(function() {
+  fs.readdir(path.join(__dirname, 'data'), function(err, files) {
+    if (err) throw err;
+    files.filter(function(file) {
+      const target = path.join(__dirname, 'data', file);
+      fs.stat(target, function(statErr, stats) {
+        if (new Date().getTime() - stats.mtime.getTime() > 30 * 60 * 1000) {
+          fs.unlink(target, function(unlinkErr) {
+            if (unlinkErr) throw err;
+            console.log(target + ' was deleted.');
+          });
+        }
+      });
+    });
+  });
+}, 10000);
 server.listen(port, function() {
   console.log('start server: port=' + port)
 })
