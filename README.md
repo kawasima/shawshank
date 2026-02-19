@@ -3,36 +3,34 @@ Shawshank
 
 Shawshank is a file transportation tool via QR Code.
 
-Demo site:
-https://shawshank-demo.herokuapp.com/
+![image](public/img/completed.png)
 
-WARNING: You should NOT upload confidential files to this demo site. 
+Setup
+-----
 
-## Setup
-
-```
-% yarn install
+```sh
+npm install
 ```
 
-## Usage
+Usage (Development)
+-----
 
+```sh
+npm run dev
 ```
-% yarn production
+
+Usage (Production)
+-----
+
+```sh
+npm run build
+npm start
 ```
 
-Select a file that you want to transfer.
+How it works
+-----
 
-![](https://github.com/kawasima/shawshank/blob/master/public/img/screen1.png?raw=true)
-
-Scan a QR code (and open the URL)
-
-![](https://github.com/kawasima/shawshank/blob/master/public/img/screen2.png?raw=true)
-
-When scanning the QR code is completed, show the next QR code.
-Repeat, repeat, repeat, ...
-
-![](https://github.com/kawasima/shawshank/blob/master/public/img/screen3.png?raw=true)
-
-When complete, the QR code for downloading the file appears.
-
-![](https://github.com/kawasima/shawshank/blob/master/public/img/screen4.png?raw=true)
+1. Select (or drag & drop) a file that you want to transfer.
+2. Scan the QR code with your phone to open the scanner page.
+3. The file is split into chunks and encoded as QR codes. The scanner reads each chunk and uploads it to the server.
+4. When the transfer is complete, a download page appears on the phone.

@@ -1,6 +1,6 @@
 {
   "name": "shawshank",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "type": "module",
   "author": "kawasima",
   "keywords": [
@@ -17,19 +17,21 @@
   },
   "license": "GPL-3.0",
   "scripts": {
-    "dev": "vite",
+    "dev": "node server.js",
     "build": "vite build",
     "start": "node server.js",
     "preview": "vite preview"
   },
   "dependencies": {
-    "bootstrap": "^4.0.0",
     "express": "^4.18.0",
+    "html5-qrcode": "^2.3.8",
     "qrious": "^4.0.2",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^7.13.0"
   },
   "devDependencies": {
+    "@vitejs/plugin-basic-ssl": "^2.1.4",
     "@vitejs/plugin-react": "^4.5.0",
     "vite": "^7.3.0"
   }
