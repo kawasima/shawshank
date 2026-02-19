@@ -58,3 +58,6 @@ typings/
 .env
 
 data/*
+
+# Vite build output
+dist/
