@@ -4,7 +4,7 @@ import QRious from 'qrious'
 const base64encode = (buf) =>
   btoa(new Uint8Array(buf).reduce((data, byte) => data + String.fromCharCode(byte), ''))
 
-const CHUNK_SIZE = 500
+const CHUNK_SIZE = 800
 
 const chunkData = (file, offset) => {
   const len = Math.min(file.content.byteLength - offset, CHUNK_SIZE)
@@ -19,10 +19,9 @@ export default function FileQR({ file, offset, onUploadCompleted }) {
   const [scannerReady, setScannerReady] = useState(false)
 
   useEffect(() => {
-    const es = new EventSource('/stream')
+    const es = new EventSource(`/stream/${fileId.current}`)
     es.onmessage = (event) => {
       const data = JSON.parse(event.data)
-      if (data.id !== fileId.current) return
       if (data.type === 'ready') {
         setScannerReady(true)
       } else if (data.type === 'progress') {
@@ -72,7 +71,7 @@ export default function FileQR({ file, offset, onUploadCompleted }) {
     foreground,
     size: 800,
     value: qrVal,
-    level: 'L',
+    level: 'M',
   })
 
   return (
@@ -81,7 +80,10 @@ export default function FileQR({ file, offset, onUploadCompleted }) {
       <img
         src={qr.toDataURL()}
         alt="QR Code"
-        style={{ maxWidth: '90vw', maxHeight: '70vh' }}
+        style={{
+          maxWidth: '90vw',
+          maxHeight: '70vh',
+        }}
       />
     </div>
   )

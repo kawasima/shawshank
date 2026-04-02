@@ -9,7 +9,7 @@ export default function Scanner() {
   const [complete, setComplete] = useState(false)
   const lastChunkRef = useRef(-1)
   const scannerRef = useRef(null)
-  const uploadingRef = useRef(false)
+  const pendingUploadRef = useRef(null)
   const readerRef = useRef(null)
 
   // Notify server that scanner is ready
@@ -19,10 +19,9 @@ export default function Scanner() {
 
   // Listen for progress via SSE
   useEffect(() => {
-    const es = new EventSource('/stream')
+    const es = new EventSource(`/stream/${fileId}`)
     es.onmessage = (event) => {
       const data = JSON.parse(event.data)
-      if (data.id !== fileId) return
       if (data.type === 'progress') {
         setUploadedBytes(data.len)
       } else if (data.type === 'complete') {
@@ -46,8 +45,8 @@ export default function Scanner() {
     html5Qrcode.start(
       { facingMode: 'environment' },
       {
-        fps: 15,
-        qrbox: { width: 300, height: 300 },
+        fps: 30,
+        qrbox: { width: 450, height: 450 },
         disableFlip: false,
       },
       async (decodedText) => {
@@ -60,16 +59,23 @@ export default function Scanner() {
         const base64data = decodedText.substring(colonPos + 1)
 
         if (chunkIndex <= lastChunkRef.current) return
-        if (uploadingRef.current) return
-        uploadingRef.current = true
+        lastChunkRef.current = chunkIndex
+
+        // Cancel any in-flight upload that hasn't completed yet
+        if (pendingUploadRef.current) {
+          pendingUploadRef.current.abort()
+        }
+        const controller = new AbortController()
+        pendingUploadRef.current = controller
 
         try {
-          await fetch(`/u/${fileId}/${encodeURIComponent(base64data)}`)
-          lastChunkRef.current = chunkIndex
+          await fetch(`/u/${fileId}/${encodeURIComponent(base64data)}`, {
+            signal: controller.signal,
+          })
         } catch (err) {
-          console.error('Upload error:', err)
-        } finally {
-          uploadingRef.current = false
+          if (err.name !== 'AbortError') {
+            console.error('Upload error:', err)
+          }
         }
       },
       () => {}

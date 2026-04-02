@@ -9,9 +9,19 @@ const port = process.env.PORT || 3000
 const ev = new EventEmitter()
 const dataDir = path.join(import.meta.dirname, 'data')
 const isProd = process.env.NODE_ENV === 'production'
+const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10MB
 
-// SSE endpoint for upload progress
-app.get('/stream', (req, res) => {
+const isValidFileId = (id) => /^[a-z0-9]{8}$/.test(id)
+const safeFilePath = (id) => {
+  if (!isValidFileId(id)) return null
+  return path.join(dataDir, id)
+}
+
+// SSE endpoint for upload progress (scoped to fileId)
+app.get('/stream/:fileId', (req, res) => {
+  const id = req.params.fileId
+  if (!isValidFileId(id)) return res.status(400).send('Invalid file ID')
+
   res.setHeader('Content-Type', 'text/event-stream')
   res.setHeader('Cache-Control', 'no-cache')
   res.setHeader('Connection', 'keep-alive')
@@ -22,20 +32,20 @@ app.get('/stream', (req, res) => {
   }, 50000)
 
   const onData = (data) => {
-    res.write(`data: ${data}\n\n`)
+    res.write(`data: ${JSON.stringify(data)}\n\n`)
   }
-  ev.on('data', onData)
+  ev.on(id, onData)
 
   req.on('close', () => {
     clearInterval(timer)
-    ev.removeListener('data', onData)
+    ev.removeListener(id, onData)
   })
 })
 
 // File download (delete after successful download)
 app.get('/d/:fileId', (req, res) => {
-  const id = req.params.fileId
-  const filepath = path.join(dataDir, id)
+  const filepath = safeFilePath(req.params.fileId)
+  if (!filepath) return res.status(400).send('Invalid file ID')
   res.download(filepath, async (err) => {
     if (err) {
       if (!res.headersSent) {
@@ -55,12 +65,23 @@ app.get('/d/:fileId', (req, res) => {
 app.get('/u/:fileId/:content', async (req, res) => {
   try {
     const id = req.params.fileId
+    const filepath = safeFilePath(id)
+    if (!filepath) return res.status(400).send('Invalid file ID')
+
     const raw = Buffer.from(req.params.content, 'base64')
-    const filepath = path.join(dataDir, id)
+
+    // Check file size limit
+    let currentSize = 0
+    try {
+      const stats = await fs.stat(filepath)
+      currentSize = stats.size
+    } catch {}
+    if (currentSize + raw.length > MAX_FILE_SIZE) {
+      return res.status(413).send('File size limit exceeded')
+    }
 
     await fs.appendFile(filepath, raw)
-    const stats = await fs.stat(filepath)
-    ev.emit('data', JSON.stringify({ id, type: 'progress', len: stats.size }))
+    ev.emit(id, { type: 'progress', len: currentSize + raw.length })
     res.send('OK')
   } catch (err) {
     console.error('Upload error:', err)
@@ -71,14 +92,16 @@ app.get('/u/:fileId/:content', async (req, res) => {
 // Scanner ready notification
 app.get('/ready/:fileId', (req, res) => {
   const id = req.params.fileId
-  ev.emit('data', JSON.stringify({ id, type: 'ready' }))
+  if (!isValidFileId(id)) return res.status(400).send('Invalid file ID')
+  ev.emit(id, { type: 'ready' })
   res.send('OK')
 })
 
 // Transfer complete notification
 app.get('/complete/:fileId', (req, res) => {
   const id = req.params.fileId
-  ev.emit('data', JSON.stringify({ id, type: 'complete' }))
+  if (!isValidFileId(id)) return res.status(400).send('Invalid file ID')
+  ev.emit(id, { type: 'complete' })
   res.send('OK')
 })
 
