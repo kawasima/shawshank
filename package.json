@@ -31,8 +31,8 @@
     "react-router-dom": "^7.13.0"
   },
   "devDependencies": {
-    "@vitejs/plugin-basic-ssl": "^2.1.4",
-    "@vitejs/plugin-react": "^4.5.0",
-    "vite": "^7.3.2"
+    "@vitejs/plugin-basic-ssl": "^2.3.0",
+    "@vitejs/plugin-react": "^6.0.2",
+    "vite": "^8.0.16"
   }
 }
