@@ -23,7 +23,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "express": "^4.22.2",
+    "express": "^5.2.1",
     "html5-qrcode": "^2.3.8",
     "qrious": "^4.0.2",
     "react": "^18.2.0",
